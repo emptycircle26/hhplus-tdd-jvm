@@ -4,22 +4,32 @@ import PointUseCaseImpl
 import io.hhplus.tdd.database.PointHistoryTable
 import io.hhplus.tdd.database.UserPointTable
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
 
 class PointConcurrencyIntegrationTest {
+    private lateinit var userPointTable: UserPointTable
+    private lateinit var pointHistoryTable: PointHistoryTable
+    private lateinit var useCase: PointUseCaseImpl
+
+    @BeforeEach
+    fun setup() {
+        userPointTable = UserPointTable()
+        pointHistoryTable = PointHistoryTable()
+        useCase = PointUseCaseImpl(userPointTable, pointHistoryTable)
+    }
+
     @Test
     fun `동시 충전, 사용에도 일관성 보장`() {
-        val userPointTable = UserPointTable()
-        val pointHistoryTable = PointHistoryTable()
-        val useCase = PointUseCaseImpl(userPointTable, pointHistoryTable)
-        val userId = 1L
+        val userId = 2L
         val threadCount = 20
         val chargePerThread = 100L
         val usePerThread = 50L
-        val executor = Executors.newFixedThreadPool(threadCount)
-        val latch = CountDownLatch(threadCount * 2)
+        val executor = Executors.newFixedThreadPool(threadCount * 2)
+        val chargeLatch = CountDownLatch(threadCount)
+        val useLatch = CountDownLatch(threadCount)
 
         // 20개 충전, 20개 사용을 동시에 실행
         repeat(threadCount) {
@@ -27,18 +37,22 @@ class PointConcurrencyIntegrationTest {
                 try {
                     useCase.charge(userId, chargePerThread)
                 } finally {
-                    latch.countDown()
+                    chargeLatch.countDown()
                 }
             }
+        }
+        chargeLatch.await()
+
+        repeat(threadCount) {
             executor.submit {
                 try {
                     useCase.use(userId, usePerThread)
                 } finally {
-                    latch.countDown()
+                    useLatch.countDown()
                 }
             }
         }
-        latch.await()
+        useLatch.await()
         executor.shutdown()
 
         // 최종 잔고: (100 * 20) - (50 * 20) = 1000
