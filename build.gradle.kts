@@ -14,9 +14,15 @@ allprojects {
 
 dependencyManagement {
     imports {
-        mavenBom(libs.spring.cloud.dependencies.get().toString())
+        mavenBom(
+            libs.spring.cloud.dependencies
+                .get()
+                .toString(),
+        )
     }
 }
+
+val mockkVersion: String by project
 
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
@@ -24,6 +30,7 @@ dependencies {
     implementation(libs.spring.boot.starter.web)
     annotationProcessor(libs.spring.boot.configuration.processor)
     testImplementation(libs.spring.boot.starter.test)
+    testImplementation("io.mockk:mockk:$mockkVersion")
 }
 
 // about source and compilation
