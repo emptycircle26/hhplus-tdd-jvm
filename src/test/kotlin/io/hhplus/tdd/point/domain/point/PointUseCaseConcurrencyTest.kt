@@ -1,15 +1,16 @@
-package io.hhplus.tdd.point
+package io.hhplus.tdd.point.domain.point
 
-import PointUseCaseImpl
 import io.hhplus.tdd.database.PointHistoryTable
 import io.hhplus.tdd.database.UserPointTable
+import io.hhplus.tdd.domain.point.PointUseCaseImpl
+import io.hhplus.tdd.domain.point.TransactionType
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
 
-class PointConcurrencyIntegrationTest {
+class PointUseCaseConcurrencyTest {
     private lateinit var userPointTable: UserPointTable
     private lateinit var pointHistoryTable: PointHistoryTable
     private lateinit var useCase: PointUseCaseImpl

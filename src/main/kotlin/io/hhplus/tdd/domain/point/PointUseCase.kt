@@ -1,5 +1,4 @@
-import io.hhplus.tdd.point.PointHistory
-import io.hhplus.tdd.point.UserPoint
+package io.hhplus.tdd.domain.point
 
 interface PointUseCase {
     fun getUserPoint(id: Long): UserPoint

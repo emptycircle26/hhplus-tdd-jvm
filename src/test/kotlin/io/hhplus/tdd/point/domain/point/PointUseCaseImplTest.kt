@@ -1,9 +1,12 @@
-package io.hhplus.tdd.point
+package io.hhplus.tdd.point.domain.point
 
-import PointUseCase
-import PointUseCaseImpl
 import io.hhplus.tdd.database.PointHistoryTable
 import io.hhplus.tdd.database.UserPointTable
+import io.hhplus.tdd.domain.point.PointHistory
+import io.hhplus.tdd.domain.point.PointUseCase
+import io.hhplus.tdd.domain.point.PointUseCaseImpl
+import io.hhplus.tdd.domain.point.TransactionType
+import io.hhplus.tdd.domain.point.UserPoint
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -106,7 +109,14 @@ class PointUseCaseImplTest {
     fun `충전 시 히스토리 기록`() {
         every { userPointTable.selectById(1L) } returns UserPoint(1L, 0L, 1000L)
         every { userPointTable.insertOrUpdate(1L, 1000L) } returns UserPoint(1L, 1000L, 2000L)
-        every { pointHistoryTable.insert(any(), any(), any(), any()) } returns PointHistory(1L, 1L, TransactionType.CHARGE, 1000L, 2000L)
+        every { pointHistoryTable.insert(any(), any(), any(), any()) } returns
+            PointHistory(
+                1L,
+                1L,
+                TransactionType.CHARGE,
+                1000L,
+                2000L,
+            )
         pointUseCase.charge(1L, 1000L)
         verify { pointHistoryTable.insert(1L, 1000L, TransactionType.CHARGE, any()) }
     }
@@ -115,7 +125,14 @@ class PointUseCaseImplTest {
     fun `사용 시 히스토리 기록`() {
         every { userPointTable.selectById(1L) } returns UserPoint(1L, 1000L, 1000L)
         every { userPointTable.insertOrUpdate(1L, 500L) } returns UserPoint(1L, 500L, 2000L)
-        every { pointHistoryTable.insert(any(), any(), any(), any()) } returns PointHistory(2L, 1L, TransactionType.USE, 500L, 2000L)
+        every { pointHistoryTable.insert(any(), any(), any(), any()) } returns
+            PointHistory(
+                2L,
+                1L,
+                TransactionType.USE,
+                500L,
+                2000L,
+            )
         pointUseCase.use(1L, 500L)
         verify { pointHistoryTable.insert(1L, 500L, TransactionType.USE, any()) }
     }
