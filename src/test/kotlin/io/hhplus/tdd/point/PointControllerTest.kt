@@ -1,8 +1,12 @@
 package io.hhplus.tdd.point
 
+import PointUseCase
+import PointUseCaseImpl
 import io.hhplus.tdd.database.PointHistoryTable
 import io.hhplus.tdd.database.UserPointTable
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -15,7 +19,7 @@ class PointControllerTest(
 
     @BeforeEach
     fun setup() {
-        pointUseCase = PointUseCase(PointHistoryTable(), UserPointTable())
+        pointUseCase = PointUseCaseImpl(UserPointTable(), PointHistoryTable())
         controller = PointController(pointUseCase)
     }
 
