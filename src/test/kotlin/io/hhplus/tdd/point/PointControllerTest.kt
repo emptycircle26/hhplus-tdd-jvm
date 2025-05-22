@@ -10,10 +10,7 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-class PointControllerTest(
-    val pointHistoryTable: PointHistoryTable,
-    val userPointTable: UserPointTable,
-) {
+class PointControllerTest {
     private lateinit var controller: PointController
     private lateinit var pointUseCase: PointUseCase
 
